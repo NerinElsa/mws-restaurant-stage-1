@@ -35,6 +35,8 @@ fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
     const option = document.createElement('option');
     option.innerHTML = neighborhood;
     option.value = neighborhood;
+    option.setAttribute('role', 'option');
+    option.setAttribute("aria-label", neighborhood);
     select.append(option);
   });
 }
@@ -58,11 +60,12 @@ fetchCuisines = () => {
  */
 fillCuisinesHTML = (cuisines = self.cuisines) => {
   const select = document.getElementById('cuisines-select');
-
   cuisines.forEach(cuisine => {
     const option = document.createElement('option');
     option.innerHTML = cuisine;
     option.value = cuisine;
+    option.setAttribute('role', 'option');
+    option.setAttribute("aria-label", cuisine);
     select.append(option);
   });
 }
@@ -75,13 +78,27 @@ window.initMap = () => {
     lat: 40.722216,
     lng: -73.987501
   };
+    
   self.map = new google.maps.Map(document.getElementById('map'), {
     zoom: 12,
     center: loc,
     scrollwheel: false
   });
+  document.getElementById('map').style.display = 'none'; //initially hides the map
   updateRestaurants();
 }
+
+/**
+ * Toggle button for map
+ */
+const toggle_map = () => {    
+  
+    if (document.getElementById('map').style.display === 'none')      
+      document.getElementById('map').style.display = 'block' //displays the map   
+    else      
+    document.getElementById('map').style.display = 'none'   //hides the map
+    }
+
 
 /**
  * Update page and map for current restaurants.
@@ -124,7 +141,9 @@ resetRestaurants = (restaurants) => {
 /**
  * Create all restaurants HTML and add them to the webpage.
  */
+
 fillRestaurantsHTML = (restaurants = self.restaurants) => {
+  
   const ul = document.getElementById('restaurants-list');
   restaurants.forEach(restaurant => {
     ul.append(createRestaurantHTML(restaurant));
@@ -135,12 +154,42 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 /**
  * Create restaurant HTML.
  */
-createRestaurantHTML = (restaurant) => {
-  const li = document.createElement('li');
 
+createRestaurantHTML = (restaurant) => {
+  if(typeof  restaurant.photograph=== 'undefined'){
+    restaurant.photograph = 'default'
+  } 
+
+  const li = document.createElement('li');
   const image = document.createElement('img');
-  image.className = 'restaurant-img';
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  
+  const alternativeText = ['Gotcha!',
+                           'Mission Chinese Food',
+                           'Emily',
+                           'Kang Ho Dong Baekjeong',
+                           'Katz\'s Delicatessen',
+                           'Roberta\'s pizza',
+                           'Hometown BBQ',
+                           'Superiority Burger',
+                           'The Dutch',
+                           'Mu Ramen',
+                           'Casa Enrique'];
+  image.className = 'lazy';
+  //image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  image.src = ('/img/spinner.gif'); //'spinner.gif' for initial page load
+  image.srcset = DBHelper.imageSourceSetUrlForRestaurant(restaurant);
+  image.sizes = '(max-width: 500px) 500px, (max-width: 640px) 260px, (max-width: 1024px) 320px, (min-width: 1025px) 210px';
+  image.alt = alternativeText[restaurant.id];
+
+  //Creating 'data-src' attrbute
+  //const src = image.getAttribute('src');
+  const srcset = image.getAttribute('srcset');
+  const datasrc = document.createAttribute('data-src');
+  datasrc.value = srcset;
+  image.setAttributeNode(datasrc);
+  image.removeAttribute('srcset');
+ // console.log('Here is new image tag', srcset);
+  
   li.append(image);
 
   const name = document.createElement('h1');
@@ -155,13 +204,33 @@ createRestaurantHTML = (restaurant) => {
   address.innerHTML = restaurant.address;
   li.append(address);
 
+  
   const more = document.createElement('a');
   more.innerHTML = 'View Details';
   more.href = DBHelper.urlForRestaurant(restaurant);
-  li.append(more)
+  more.id = 'detailsbutton';
+  more.className = 'viewdetails-button';
+  more.setAttribute('aria-label', 'More about this restaurant');
+  more.setAttribute('role', 'link');
+  li.append(more);
 
   return li
+} 
+
+function initialiseImages() {
+  var images = document.currentScript.parentNode.getElementsByTagName('img');
+  //debugger;
+  for (var i = 0; i < images.length; i++) {
+                  var src = images[i].getAttribute('src');
+                  var datasrc = document.createAttribute('data-src');
+                  datasrc.value = src;
+                  images[i].setAttributeNode(datasrc);
+                  images[i].removeAttribute('src');
+                  console.log('Here is new image tag',images[i]);           
+  }
+  console.log('Here are images',images);  
 }
+
 
 /**
  * Add markers for current restaurants to the map.

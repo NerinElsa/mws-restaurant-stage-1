@@ -7,12 +7,24 @@ class DBHelper {
    * Database URL.
    * Change this to restaurants.json file location on your server.
    */
-  static get DATABASE_URL() {
-    const port = 8000 // Change this to your server port
-    return `http://localhost:${port}/data/restaurants.json`;
-  }
 
-  /**
+   /*
+  static get DATABASE_URL() {
+    // local server port settings for restaurant stage 1 project
+     const port = 8000 // Change this to your server port
+     return `http://localhost:${port}/data/restaurants.json`;
+   }
+   */
+ 
+  static get DATABASE_URL() {
+    // local server port settings for restaurant stage 2 project
+     const port = 1337 // Change this to your server port
+     return `http://localhost:1337/restaurants`;
+   }
+
+  
+
+  /** 
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
@@ -20,16 +32,19 @@ class DBHelper {
     xhr.open('GET', DBHelper.DATABASE_URL);
     xhr.onload = () => {
       if (xhr.status === 200) { // Got a success response from server!
-        const json = JSON.parse(xhr.responseText);
-        const restaurants = json.restaurants;
+        const restaurants = JSON.parse(xhr.responseText);
+        //console.log ('Here are restaurants', restaurants);
+        //console.log(restaurants[2]);
         callback(null, restaurants);
       } else { // Oops!. Got an error from server.
         const error = (`Request failed. Returned status of ${xhr.status}`);
         callback(error, null);
       }
     };
+    console.log ('Here is xhr', xhr);
     xhr.send();
-  }
+    }
+
 
   /**
    * Fetch a restaurant by its ID.
@@ -40,7 +55,9 @@ class DBHelper {
       if (error) {
         callback(error, null);
       } else {
+        
         const restaurant = restaurants.find(r => r.id == id);
+        console.log(restaurant);
         if (restaurant) { // Got the restaurant
           callback(null, restaurant);
         } else { // Restaurant does not exist in the database
@@ -141,16 +158,43 @@ class DBHelper {
 
   /**
    * Restaurant page URL.
-   */
+   
   static urlForRestaurant(restaurant) {
     return (`./restaurant.html?id=${restaurant.id}`);
   }
+  */
+  static urlForRestaurant(restaurant) {
+    return (`./restaurant.html?id=${restaurant.id}`);
+  }
+  
 
   /**
    * Restaurant image URL.
    */
-  static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph}`);
+  static imageUrlForRestaurant(restaurant) { 
+      return (`/img/${restaurant.photograph}.jpg`);    
+  }
+  
+  
+  /**
+   * Restaurant initial load image URL for stage 2
+   */
+  static imageInitialLoadUrlForRestaurant(restaurant) { 
+    return (`/responsiveimages/${restaurant.photograph}-medium_0.80x.jpg`);    
+}
+  
+  /**
+   * Restaurant image source set URL for stage 1
+  static imageSourceSetUrlForRestaurant(restaurant) {
+    return (`/responsiveimages/${restaurant.smallimage}-small_0.50x.jpg 400w, /responsiveimages/${restaurant.mediumimage} 640w, /responsiveimages/${restaurant.largeimage} 800w`);
+  }
+  */
+  
+  /**
+   * Restaurant image source set URL for stage 2
+   */
+  static imageSourceSetUrlForRestaurant(restaurant) {
+    return(`/responsiveimages/${restaurant.photograph}-small_0.50x.jpg 400w, /responsiveimages/${restaurant.photograph}-medium_0.80x.jpg 640w, /responsiveimages/${restaurant.photograph}-large_2x.jpg 800w, /responsiveimages/${restaurant.photograph}.jpg`);
   }
 
   /**

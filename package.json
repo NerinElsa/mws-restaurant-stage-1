@@ -1,0 +1,29 @@
+{
+  "name": "mws-restaurant-stage-1",
+  "version": "1.0.0",
+  "description": "Project 1",
+  "main": "Gruntfile.js",
+  "dependencies": {
+    "grunt": "^0.4.5",
+    "grunt-responsive-images": "^1.10.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "tap test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NerinElsa/mws-restaurant-stage-1.git"
+  },
+  "keywords": [
+    "mws",
+    "restaurant-stage-1",
+    "project1"
+  ],
+  "author": "Nerin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NerinElsa/mws-restaurant-stage-1/issues"
+  },
+  "homepage": "https://github.com/NerinElsa/mws-restaurant-stage-1#readme"
+}

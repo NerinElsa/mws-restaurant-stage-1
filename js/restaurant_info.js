@@ -37,8 +37,10 @@ fetchRestaurantFromURL = (callback) => {
       self.restaurant = restaurant;
       if (!restaurant) {
         console.error(error);
+        //showCachedRestaurants ();
         return;
       }
+      
       fillRestaurantHTML();
       callback(null, restaurant)
     });
@@ -49,6 +51,10 @@ fetchRestaurantFromURL = (callback) => {
  * Create restaurant HTML and add it to the webpage
  */
 fillRestaurantHTML = (restaurant = self.restaurant) => {
+  if(typeof  restaurant.photograph=== 'undefined'){
+    restaurant.photograph = 'default'
+  } 
+  
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
 
@@ -56,9 +62,12 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   address.innerHTML = restaurant.address;
 
   const image = document.getElementById('restaurant-img');
-  image.className = 'restaurant-img'
+  image.className = 'restaurant-img';
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
-
+  image.srcset = DBHelper.imageSourceSetUrlForRestaurant(restaurant);
+  image.sizes = '(max-width: 500px) 100vw, 50vw';
+  image.alt = `${restaurant.alt}`;
+  
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
 
@@ -118,14 +127,17 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
 createReviewHTML = (review) => {
   const li = document.createElement('li');
   const name = document.createElement('p');
+  name.id = 'reviewer-name';
   name.innerHTML = review.name;
   li.appendChild(name);
+ 
 
   const date = document.createElement('p');
   date.innerHTML = review.date;
   li.appendChild(date);
 
   const rating = document.createElement('p');
+  rating.id = 'reviewer-rating';
   rating.innerHTML = `Rating: ${review.rating}`;
   li.appendChild(rating);
 
