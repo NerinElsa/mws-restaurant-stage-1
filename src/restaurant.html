@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- scales viewport width and device width to same -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Progressive Images -->
+  <link rel="stylesheet" href="css/progressive-image.min.css" type="text/css">
+  <!-- Normalize.css for better cross-browser consistency -->
+  <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+  <!-- Main CSS file -->
+  <link rel="stylesheet" href="css/styles.css" type="text/css">
+  <!-- Responsive CSS file -->
+  <link rel="stylesheet" href="css/responsive.css" type="text/css">
+  <!-- Manifest.json file -->
+  <link rel="manifest" href="/manifest.json">
+
+  <title>Restaurant Info</title>
+</head>
+   
+
+<body class="inside">
+
+ 
+ 
+  <!-- Beginning header -->
+  <header>
+    <!-- Beginning nav -->
+    <nav>
+      <h1><a href="/">Restaurant Reviews</a></h1>
+    </nav>
+    <!-- Beginning breadcrumb -->
+    <ul id="breadcrumb" >
+      <li><a href="/">Home</a></li>
+    </ul>
+    <!-- End breadcrumb -->
+    <!-- End nav -->
+  </header>   
+  <!-- End header -->
+     
+  <!--Skip Map-->
+  <a href="#maincontent" class="skip-link">Skip to main content</a>
+
+ 
+  <!-- Beginning map -->
+  <div class="div-map">
+    <section id="map-container">
+      <div id="map" role="application" aria-roledescription="map"></div>
+    </section>
+  </div>
+  <!-- End map -->
+
+  <!-- Beginning main -->
+  <main id="maincontent">
+    
+    <!-- Beginning restaurant -->
+    <div class="two-containers">
+    <div class="div-restaurant">
+    <section id="restaurant-container">
+        <h1 id="restaurant-name"></h1>
+        <img id="restaurant-img">
+        <p id="restaurant-cuisine"></p>
+        <p id="restaurant-address"></p>
+      <table id="restaurant-hours"></table>
+    </section>
+   </div>
+    <!-- end restaurant -->
+    <!-- Beginning reviews -->
+    <div class="div-reviews">
+    <section id="reviews-container">
+      <ul id="reviews-list"></ul>
+    </section>
+  </div>
+  <!-- End reviews -->
+  <!-- Beginning addreview form -->
+  <div class="form-group">
+    <section id="addreviews-container">
+        <h3>Add a review</h3>
+          <form id="review-form">
+            
+            <label for="user-name" id="1">Name:  
+            </label>
+            <input type="text" id="user-name">
+
+            <label for="rating" id="2">
+              Rate:
+            </label> 
+              <select name="rating" id="rating">
+                <option value="&#9733">&#9733</option>
+                <option value="&#9733 &#9733">&#9733&#9733</option>
+                <option value="&#9733&#9733&#9733">&#9733&#9733&#9733</option>
+                <option value="&#9733&#9733&#9733&#9733">&#9733&#9733&#9733&#9733</option>
+                <option value="&#9733&#9733&#9733&#9733&#9733">&#9733&#9733&#9733&#9733&#9733</option>
+              </select>
+            
+            <label for="comments-textarea" id="3">Comments:
+            </label> 
+              <textarea rows="4" cols="40%" id="comments-textarea">
+              </textarea>
+            
+            <label for="submit-button" id="4">
+              <input type="submit" value="Submit" id="submit-button">
+            </label>          
+          </form>
+        </div>
+  <!-- End addreview form -->
+  </div>
+</main>
+  <!-- End main -->
+
+  <!-- Beginning scripts -->
+  <script type="application/javascript" charset="utf-8"src="js/progressive-image.min.js"></script>
+  <!-- IDB library -->
+  <script type="application/javascript" charset="utf-8"src="js/idb.js"></script> 
+  <!-- Database helpers -->
+  <script type="text/javascript" src="js/dbhelper.js"></script>
+  <!-- Main javascript file -->
+  <script type="text/javascript" src="js/restaurant_info.js"></script>
+  <!-- post-new-review javascript file -->
+  <script type="text/javascript" src="js/post-new-review.js"></script>
+  <!-- Google Maps -->
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDn_hpf_uS8BDUQCANwgItdVHafGUBtw6g&libraries=places&callback=initMap"></script>
+  <!-- Example fetch reviews javascript file
+  <script type="text/javascript" src="js/fetchreviewsexample.js"></script>
+   -->
+  <!-- End scripts -->
+
+  <!-- Beginning footer -->
+  <div class="div-footer">
+  <footer id="footer">
+    Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
+  </footer>
+</div>
+  <!-- End footer -->
+
+  </body>
+ </div>
+</html>
