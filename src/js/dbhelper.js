@@ -17,13 +17,13 @@ class DBHelper {
    */
 
   /**
-    * DATABASE_URL_2 - local server port settings for restaurant stage 2 project
+    * DATABASE_URL_2 - local server port settings for restaurant stage 2 project (***NOT USING****)
     */ 
   static get DATABASE_URL_2() {
      const port = 1337 // Server port number
      return `http://localhost:1337/restaurants`;
    }
-
+   
    /**
     * ALL_REVIEW_URL - local server port settings for restaurant stage 3 project
     */
@@ -31,7 +31,17 @@ class DBHelper {
      const port = 1337 //Server port number
      return `http://localhost:1337/reviews`;
    }
-
+//********************************* ZEIT Publishing ************************************************ */
+   /**
+    * DATABASE_URL_NEW - server settings for restaurant project publishing
+    */ 
+  static get NEW_DATABASE_URL() {
+   // const port = 1337 // Server port number
+    return `https://api.myjson.com/bins/uuwbe`;
+    //return `https://api.myjson.com/bins/uuwbe?restaurants`;
+  }
+  
+//************************************************************************************************ */
     /**
     * EACH_RESTAURANT_REVIEWS_URL - local server port settings for restaurant stage 3 project
     */
@@ -39,10 +49,13 @@ class DBHelper {
       const ID = restaurant.id //Server port number
       console.log('This is port', port);
       return `http://localhost:1337/reviews/?restaurant_id=${ID}`;
+      
     }
+
+
     
     /**
-     *Open IDB 
+     *Opening  IDB 
      */
     static openIDB (){ //Opens a new indexed database called restaurantDB
       'use strict';
@@ -60,7 +73,7 @@ class DBHelper {
         console.log('There is no Service Worker available!');
         return Promise.resolve();
       }else{
-        console.log('There is a Service Worker available!')
+        console.log('There is a Service Worker available! HALLO')
         }//End service worker check
       
       //Creates a new IDB
@@ -184,7 +197,7 @@ class DBHelper {
                 //alert( 'Offline - Reviews got from IDB');
                 return Promise.resolve(offlineReviews);
               })
-              fillReviewsHTML(offlineReviews);
+             // fillReviewsHTML(offlineReviews);
             }
           });//End catch error        
   }//End of static fetchRestaurants(callback)
@@ -226,28 +239,38 @@ class DBHelper {
         }
        
       //After passing the cached restaurants we need to update the cache with fetching restaurants from network.
-      fetch(DBHelper.DATABASE_URL_2, {credentials:'same-origin'})
+      fetch(DBHelper.NEW_DATABASE_URL, {credentials:'same-origin'})
         .then(function(response) {
           if(response.ok) {//Checks if a successful response received from server. ie. response.status = 200
-            //console.log('Looks like the response is here', response);
+            console.log('NEW RESPONSE Looks like the response is here', response);
+            
+
+
             return response.json();
           } else if(!response.ok){//if the fetch url is wrong this error message displays in '.catch'
               return Promise.reject('Please double check the fetch request URL!'); //If the response was not `ok` a custom reject message is sent.
             }
         }).then(function fetchRestaurantData(restaurants) { //Fetches restaurant data from json object
-                //console.log('Here are the restaurants JSON object array', restaurants);
-                
+                console.log('HAII!!!Here are the restaurants JSON object array', restaurants);
+                const myRestaurants = restaurants.restaurants;   //extracts array of 'restaurants' from JSON object 'restaurants'
                 dbPromise = DBHelper.openIDB();
-                //console.log('A new IDB is created!')
-                
+                /******************* TEST***************************************** */
+                console.log('Here are my restaurants', myRestaurants );  //GoOD
+                const firstRestaurant = myRestaurants[0];                //Good
+                const firstRestaurantId = firstRestaurant.id;            //Good
+                console.log('Here are my first restaurant', firstRestaurant, firstRestaurantId );   //Good
+                /************************************************************** */
                 dbPromise.then(function(db) {//Adds the 'restaurants into IDB
                   //debugger;
                   if(!db) return;
                   //Opens a new transaction tx on object store called restaurantsObjStr
                   let tx = db.transaction('restaurantOS', 'readwrite');
                   let ObjectStoreTransaction = tx.objectStore('restaurantOS');
-                  restaurants.forEach(function(restaurant) {//Puts each restaurant into IDB
+                  myRestaurants.forEach(function(restaurant) {//Puts each restaurant into IDB
+                  //jsonRestaurantsObject.forEach(function(restaurant) {//Puts each restaurant into IDB
                       ObjectStoreTransaction.put(restaurant); 
+                      console.log('Added restaurants to IDB!', restaurant);
+                      console.log('Here are resaurant ids', restaurant.id );
                   });
                   //console.log('Added restaurants to IDB!');
                   return tx.complete.then(()=>Promise.resolve(restaurants));   //Completes the transacion and the promise resolves with a result 'restaurants' 
@@ -277,9 +300,14 @@ class DBHelper {
         callback(error, null);
       } else {
         const restaurant = restaurants.find(r => r.id == id);
-               
+        
+        //debugger;
+        //console.log(restaurant);
+        //const individualReviews = restaurant.reviews;
+        //console.log(individualReviews);               
         /************************** Fetch REVIEWS by id *****************************************************/
         let restaurant_id = restaurant.id;  //Assigns the value of 'restautant.id' to variable 'restaurant_id'
+        
         this.fetchReviewsById(restaurant_id);  //This function gets reviews for individual restaurants
         if (restaurant) { // Got the restaurant
           callback(null, restaurant);
@@ -409,6 +437,7 @@ class DBHelper {
   */
   static urlForRestaurant(restaurant) {
     return (`./restaurant.html?id=${restaurant.id}`);
+    //return (`DBHelper.NEW_DATABASE_URL./restaurant.html?id=${restaurant.id}`);       
   }
   
 
@@ -416,7 +445,8 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) { 
-      return (`/img/${restaurant.photograph}.jpg`);    
+      //return (`/img/${restaurant.photograph}.jpg`);  
+      return (`/img/${restaurant.id}.jpg`);   
   }
   
   
@@ -424,7 +454,8 @@ class DBHelper {
    * Restaurant initial load image URL for stage 2
    */
   static imageInitialLoadUrlForRestaurant(restaurant) { 
-    return (`/responsiveimages/${restaurant.photograph}-medium_0.80x.jpg`);    
+    //return (`/responsiveimages/${restaurant.photograph}-medium_0.80x.jpg`);
+    return (`/responsiveimages/${restaurant.id}-medium_0.80x.jpg`);    
 }
   
   /**
@@ -440,7 +471,8 @@ class DBHelper {
   static imageSourceSetUrlForRestaurant(restaurant) {
    // return(`/responsiveimages/${restaurant.photograph}-small_0.50x.jpg 400w, /responsiveimages/${restaurant.photograph}-medium_0.80x.jpg 640w, /responsiveimages/${restaurant.photograph}-large_2x.jpg 800w, /responsiveimages/${restaurant.photograph}.jpg`);
   
-  return(`/responsiveimages/${restaurant.photograph}-small_0.50x.jpg 400w, /responsiveimages/${restaurant.photograph}-large_2x.jpg 800w`);
+  //return(`/responsiveimages/${restaurant.photograph}-small_0.50x.jpg 400w, /responsiveimages/${restaurant.photograph}-large_2x.jpg 800w`);
+  return(`/responsiveimages/${restaurant.id}-small_0.50x.jpg 400w, /responsiveimages/${restaurant.id}-large_2x.jpg 800w`);
 }
 
   /**

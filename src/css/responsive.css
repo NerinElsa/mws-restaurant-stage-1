@@ -82,7 +82,7 @@ a.skip-link:hover {
   #favorite-button:focus
   {
     color: #333; 
-    background-color:rgb(19, 235, 12);
+   /* background-color:rgb(19, 235, 12);*/
 }
   
   #favorite-button:hover,
